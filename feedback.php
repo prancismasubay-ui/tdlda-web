@@ -3,7 +3,7 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_login();
 
-$feedback = $pdo->query("SELECT * FROM feedback ORDER BY created_at DESC")->fetchAll();
+$feedback = $pdo->query("SELECT f.*, w.dialect_term, d.name AS dialect_name FROM feedback f LEFT JOIN words w ON f.word_id = w.id LEFT JOIN dialects d ON w.dialect_id = d.id ORDER BY f.created_at DESC")->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,6 +34,8 @@ $feedback = $pdo->query("SELECT * FROM feedback ORDER BY created_at DESC")->fetc
       <table class="data-table">
         <thead>
           <tr>
+            <th>Word</th>
+            <th>Feedback</th>
             <th>Respondent</th>
             <th>Type</th>
             <th>Rating</th>
@@ -44,10 +46,19 @@ $feedback = $pdo->query("SELECT * FROM feedback ORDER BY created_at DESC")->fetc
         </thead>
         <tbody>
           <?php if (count($feedback) === 0): ?>
-            <tr><td colspan="6"><div class="empty-state">No feedback submitted yet.</div></td></tr>
+            <tr><td colspan="8"><div class="empty-state">No feedback submitted yet.</div></td></tr>
           <?php endif; ?>
           <?php foreach ($feedback as $f): ?>
           <tr>
+            <td>
+              <?php if ($f['dialect_term']): ?>
+                <strong><?= htmlspecialchars($f['dialect_term']) ?></strong><br>
+                <small><?= htmlspecialchars($f['dialect_name'] ?: '') ?></small>
+              <?php else: ?>
+                <span class="muted">General</span>
+              <?php endif; ?>
+            </td>
+            <td><span class="pill"><?= htmlspecialchars($f['feedback_type'] ?? 'Comment') ?></span></td>
             <td><?= htmlspecialchars($f['respondent_name'] ?: 'Anonymous') ?></td>
             <td><span class="pill"><?= htmlspecialchars($f['respondent_type']) ?></span></td>
             <td><?= str_repeat('★', (int)$f['rating']) . str_repeat('☆', 5 - (int)$f['rating']) ?></td>

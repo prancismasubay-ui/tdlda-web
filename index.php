@@ -142,14 +142,14 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   <?php else: ?>
     <div class="word-grid">
       <?php foreach ($words as $w): ?>
-        <div class="word-card">
+        <div class="word-card word-card-clickable" tabindex="0" role="button" onclick="openWordFeedback(<?= (int)$w['id'] ?>)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWordFeedback(<?= (int)$w['id'] ?>)}">
           <div class="wc-top">
             <div>
               <div class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></div>
               <?php if ($w['pos_name']): ?><div class="wc-pos"><?= htmlspecialchars($w['pos_name']) ?></div><?php endif; ?>
             </div>
             <?php if (!empty($w['audio_path'])): ?>
-              <button class="audio-btn" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()" title="Play pronunciation">
+              <button class="audio-btn" onclick="event.stopPropagation(); document.getElementById('aud-<?= $w['id'] ?>').play()" title="Play pronunciation">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                 Play
               </button>
@@ -182,6 +182,11 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
           <?php if (!empty($w['etymology'])): ?>
             <div class="wc-etymology"><em><?= htmlspecialchars($w['etymology']) ?></em></div>
           <?php endif; ?>
+
+          <button type="button" class="word-feedback-btn" onclick="event.stopPropagation(); openWordFeedback(<?= (int)$w['id'] ?>)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-9 8.5 9.4 9.4 0 0 1-4-.9L3 21l1.9-4.4A8.38 8.38 0 0 1 3 11.5 8.5 8.5 0 0 1 12 3a8.5 8.5 0 0 1 9 8.5Z"/><path d="M8 11h8M8 15h5"/></svg>
+            Give feedback on this word
+          </button>
         </div>
       <?php endforeach; ?>
     </div>
@@ -192,6 +197,72 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 <div class="public-footer">
   Kalinga Dialects Learning Dictionary &mdash; a capstone project developed with the Kalinga Provincial Tourism Office.<br>
   Documenting and preserving Kalinga's indigenous dialects, one word at a time.
+</div>
+
+<!-- Word Feedback Modal -->
+<div class="modal-overlay" id="wordFeedbackModal" aria-hidden="true">
+  <div class="modal-box word-feedback-modal" role="dialog" aria-modal="true" aria-labelledby="wordFeedbackTitle">
+    <button class="close-x" type="button" onclick="closeWordFeedback()" aria-label="Close feedback">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+    </button>
+    <div class="feedback-word-heading">
+      <div class="feedback-word-term" id="feedbackWordTerm">Word</div>
+      <div class="feedback-word-meta" id="feedbackWordMeta"></div>
+    </div>
+    <h3 id="wordFeedbackTitle">Feedback on this word</h3>
+    <p class="feedback-intro">Help us improve this dictionary entry. Your feedback will be reviewed by the administrator.</p>
+
+    <div class="error-msg" id="wordFeedbackError"></div>
+    <div class="alert alert-success" id="wordFeedbackSuccess" style="display:none;"></div>
+
+    <form id="wordFeedbackForm">
+      <input type="hidden" name="word_id" id="feedbackWordId">
+      <div class="form-group">
+        <label>How would you like to comment?</label>
+        <select name="feedback_type" required>
+          <option value="Comment">General comment</option>
+          <option value="Spelling">Spelling may be incorrect</option>
+          <option value="Definition">Definition may be incorrect</option>
+          <option value="Example">Example sentence needs correction</option>
+          <option value="Suggestion">Suggestion for this entry</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Rating</label>
+        <div class="rating-stars" role="radiogroup" aria-label="Rate this dictionary entry">
+          <?php for ($r = 1; $r <= 5; $r++): ?>
+            <button type="button" class="rating-star" data-rating="<?= $r ?>" aria-label="<?= $r ?> star<?= $r > 1 ? 's' : '' ?>">☆</button>
+          <?php endfor; ?>
+        </div>
+        <input type="hidden" name="rating" id="feedbackRating" value="5">
+        <div class="rating-label" id="ratingLabel">5 stars</div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Your name <span class="optional">(optional)</span></label>
+          <input type="text" name="respondent_name" maxlength="100" placeholder="Anonymous">
+        </div>
+        <div class="form-group">
+          <label>Respondent type</label>
+          <select name="respondent_type">
+            <option value="Other">Other</option>
+            <option value="Tourist">Tourist</option>
+            <option value="Non-Kalinga Speaker">Non-Kalinga Speaker</option>
+            <option value="Native Speaker">Native Speaker</option>
+            <option value="Student">Student</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Comments</label>
+        <textarea name="comments" maxlength="2000" required placeholder="What should we know about this word?"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" onclick="closeWordFeedback()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="wordFeedbackSubmit">Submit Feedback</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <!-- Login Modal -->
@@ -221,6 +292,94 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 </div>
 
 <script>
+let activeFeedbackWordId = null;
+
+function openWordFeedback(wordId) {
+  activeFeedbackWordId = Number(wordId);
+  const card = document.querySelector('.word-card[onclick*="openWordFeedback(' + activeFeedbackWordId + ')"]');
+  const modal = document.getElementById('wordFeedbackModal');
+  const form = document.getElementById('wordFeedbackForm');
+  const errorBox = document.getElementById('wordFeedbackError');
+  const successBox = document.getElementById('wordFeedbackSuccess');
+  const wordIdInput = document.getElementById('feedbackWordId');
+  const term = card ? card.querySelector('.wc-term')?.textContent.trim() : 'Dictionary word';
+  const meta = card ? Array.from(card.querySelectorAll('.wc-meta .pill')).map(el => el.textContent.trim()).join(' • ') : '';
+  document.getElementById('feedbackWordTerm').textContent = term;
+  document.getElementById('feedbackWordMeta').textContent = meta;
+  wordIdInput.value = activeFeedbackWordId;
+  form.reset();
+  wordIdInput.value = activeFeedbackWordId;
+  document.getElementById('feedbackRating').value = '5';
+  updateRatingStars(5);
+  errorBox.style.display = 'none';
+  successBox.style.display = 'none';
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+  setTimeout(() => form.querySelector('select[name="feedback_type"]').focus(), 50);
+}
+
+function closeWordFeedback() {
+  const modal = document.getElementById('wordFeedbackModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+  activeFeedbackWordId = null;
+}
+
+function updateRatingStars(rating) {
+  document.querySelectorAll('.rating-star').forEach(btn => {
+    const value = Number(btn.dataset.rating);
+    btn.textContent = value <= rating ? '★' : '☆';
+    btn.classList.toggle('selected', value <= rating);
+  });
+  document.getElementById('ratingLabel').textContent = rating + (rating === 1 ? ' star' : ' stars');
+}
+
+document.querySelectorAll('.rating-star').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const rating = Number(btn.dataset.rating);
+    document.getElementById('feedbackRating').value = String(rating);
+    updateRatingStars(rating);
+  });
+});
+
+document.getElementById('wordFeedbackModal').addEventListener('click', function (e) {
+  if (e.target === this) closeWordFeedback();
+});
+
+document.getElementById('wordFeedbackForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const form = this;
+  const submitBtn = document.getElementById('wordFeedbackSubmit');
+  const errorBox = document.getElementById('wordFeedbackError');
+  const successBox = document.getElementById('wordFeedbackSuccess');
+  errorBox.style.display = 'none';
+  successBox.style.display = 'none';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  try {
+    const res = await fetch('process/feedback_save.php', { method: 'POST', body: new FormData(form) });
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.message || 'Unable to submit feedback.');
+    successBox.textContent = data.message || 'Thank you for your feedback!';
+    successBox.style.display = 'block';
+    form.reset();
+    document.getElementById('feedbackWordId').value = activeFeedbackWordId;
+    document.getElementById('feedbackRating').value = '5';
+    updateRatingStars(5);
+    submitBtn.textContent = 'Submitted';
+    setTimeout(closeWordFeedback, 1600);
+  } catch (err) {
+    errorBox.textContent = err.message || 'Something went wrong. Please try again.';
+    errorBox.style.display = 'block';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Feedback';
+  }
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && document.getElementById('wordFeedbackModal').classList.contains('show')) closeWordFeedback();
+});
+
 function switchDialect(dialectId) {
   const url = new URL(window.location);
   url.searchParams.set('dialect', dialectId);
