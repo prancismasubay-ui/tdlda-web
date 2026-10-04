@@ -136,53 +136,79 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   <?php else: ?>
     <div class="word-grid">
       <?php foreach ($words as $w): ?>
+        <?php
+          $pronunciation = trim($w['pronunciation'] ?? '', " /\t\n\r\0\x0B");
+          $audioPath = trim($w['audio_path'] ?? '');
+          $translation = trim($w['english_translation'] ?? '');
+          $meanings = array_values(array_filter($w['definitions'], function ($definition) {
+              return trim($definition['definition_english'] ?? '') !== ''
+                  || trim($definition['example_sentence_dialect'] ?? '') !== ''
+                  || trim($definition['example_sentence_english'] ?? '') !== '';
+          }));
+          if (!$meanings && $translation !== '') {
+              $meanings = [['definition_english' => $translation]];
+          }
+          $synonyms = array_values(array_filter($w['synonyms'], fn($synonym) => trim($synonym) !== ''));
+          $origin = trim($w['etymology'] ?? '');
+        ?>
         <div class="word-card">
-          <div class="wc-top">
-            <div>
-              <div class="wc-heading">
-                <span class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></span>
-                <?php if (word_heading_translation($w) !== ''): ?>
-                  <span class="wc-translation">- <?= htmlspecialchars(word_heading_translation($w)) ?></span>
-                <?php endif; ?>
-              </div>
-              <?php if ($w['pos_name']): ?><div class="wc-pos"><?= htmlspecialchars($w['pos_name']) ?></div><?php endif; ?>
-              <?php if (!empty($w['pronunciation'])): ?><div class="wc-pronunciation">Pronunciation: <?= htmlspecialchars($w['pronunciation']) ?></div><?php endif; ?>
-            </div>
-            <?php if (!empty($w['audio_path'])): ?>
-              <button class="audio-btn" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()" title="Play pronunciation">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                Play
-              </button>
-              <audio id="aud-<?= $w['id'] ?>" src="uploads/audio/<?= htmlspecialchars($w['audio_path']) ?>"></audio>
-            <?php endif; ?>
-          </div>
-
+          <?php if (trim($w['dialect_name'] ?? '') !== '' || trim($w['category_name'] ?? '') !== ''): ?>
           <div class="wc-meta">
-            <span class="pill dialect-tag">Dialect: <?= htmlspecialchars($w['dialect_name'] ?? 'Unknown') ?></span>
-            <?php if ($w['category_name']): ?><span class="pill category-tag"><?= htmlspecialchars($w['category_name']) ?></span><?php endif; ?>
+            <?php if (trim($w['dialect_name'] ?? '') !== ''): ?><span class="pill dialect-tag"><?= htmlspecialchars($w['dialect_name']) ?></span><?php endif; ?>
+            <?php if (trim($w['category_name'] ?? '') !== ''): ?><span class="pill category-tag"><?= htmlspecialchars(ucfirst(strtolower(trim($w['category_name'])))) ?></span><?php endif; ?>
           </div>
-
-          <?php foreach ($w['definitions'] as $i => $d): ?>
-            <div class="wc-definition">
-              <?php if (!word_definition_is_redundant($w, $d['definition_english'])): ?>
-                <?php if (count($w['definitions']) > 1): ?><span class="wc-def-num"><?= $i + 1 ?></span><?php endif; ?>
-                <span class="wc-def-text"><strong>Definition:</strong> <?= htmlspecialchars($d['definition_english']) ?></span>
+          <?php endif; ?>
+          <h2 class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></h2>
+          <?php if ($pronunciation !== '' || $audioPath !== '' || trim($w['pos_name'] ?? '') !== ''): ?>
+            <div class="wc-details">
+              <?php if ($pronunciation !== ''): ?><span class="wc-pronunciation">/ <?= htmlspecialchars($pronunciation) ?> /</span><?php endif; ?>
+              <?php if ($audioPath !== ''): ?>
+                <button type="button" class="wc-listen" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()" aria-label="Listen to <?= htmlspecialchars($w['dialect_term']) ?>" title="Listen to pronunciation">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg>
+                  Listen
+                </button>
+                <audio id="aud-<?= $w['id'] ?>" preload="none" src="uploads/audio/<?= htmlspecialchars($audioPath) ?>"></audio>
               <?php endif; ?>
-              <?php if (!empty($d['example_sentence_dialect']) || !empty($d['example_sentence_english'])): ?>
+              <?php if (trim($w['pos_name'] ?? '') !== ''): ?><span class="wc-pos"><?= htmlspecialchars(strtolower($w['pos_name'])) ?></span><?php endif; ?>
+            </div>
+          <?php endif; ?>
+
+          <?php if ($meanings): ?><div class="wc-meanings"><?php endif; ?>
+          <?php foreach ($meanings as $i => $d): ?>
+            <?php
+              $definition = trim($d['definition_english'] ?? '');
+              $meaning = $i === 0 && $translation !== '' ? $translation : $definition;
+              $exampleDialect = trim($d['example_sentence_dialect'] ?? '');
+              $exampleEnglish = trim($d['example_sentence_english'] ?? '');
+            ?>
+            <div class="wc-definition">
+              <?php if ($meaning !== ''): ?>
+                <div class="wc-meaning">
+                  <?php if (count($meanings) > 1): ?><span class="wc-def-num"><?= $i + 1 ?></span><?php endif; ?>
+                  <span class="wc-def-text"><?= htmlspecialchars($meaning) ?></span>
+                </div>
+                <?php if ($i === 0 && $translation !== '' && $definition !== '' && word_text_key($translation) !== word_text_key($definition)): ?>
+                  <p class="wc-explanation"><?= htmlspecialchars($definition) ?></p>
+                <?php endif; ?>
+              <?php endif; ?>
+              <?php if ($exampleDialect !== '' || $exampleEnglish !== ''): ?>
                 <div class="wc-example">
-                  <?php if (!empty($d['example_sentence_dialect'])): ?><strong><?= htmlspecialchars($w['dialect_name']) ?>:</strong> <?= htmlspecialchars($d['example_sentence_dialect']) ?><br><?php endif; ?>
-                  <?php if (!empty($d['example_sentence_english'])): ?><strong>English:</strong> <?= htmlspecialchars($d['example_sentence_english']) ?><?php endif; ?>
+                  <?php if ($exampleDialect !== ''): ?><p class="wc-example-dialect"><?= htmlspecialchars($exampleDialect) ?></p><?php endif; ?>
+                  <?php if ($exampleEnglish !== ''): ?><p class="wc-example-english"><?= htmlspecialchars($exampleEnglish) ?></p><?php endif; ?>
                 </div>
               <?php endif; ?>
             </div>
           <?php endforeach; ?>
+          <?php if ($meanings): ?></div><?php endif; ?>
 
-          <?php if (!empty($w['synonyms'])): ?>
-            <div class="wc-synonyms"><strong>Synonyms:</strong> <?= htmlspecialchars(implode(', ', $w['synonyms'])) ?></div>
-          <?php endif; ?>
-
-          <?php if (!empty($w['etymology'])): ?>
-            <div class="wc-etymology"><em><?= htmlspecialchars($w['etymology']) ?></em></div>
+          <?php if ($synonyms || $origin !== ''): ?>
+            <dl class="wc-info">
+              <?php if ($synonyms): ?>
+                <dt>Similar words</dt>
+                <dd class="wc-synonyms"><?php foreach ($synonyms as $synonym): ?><span class="wc-synonym"><?= htmlspecialchars(trim($synonym)) ?></span><?php endforeach; ?></dd>
+              <?php endif; ?>
+              <?php if ($origin !== ''): ?><dt>Word origin</dt><dd class="wc-origin"><?= htmlspecialchars($origin) ?></dd><?php endif; ?>
+            </dl>
           <?php endif; ?>
         </div>
       <?php endforeach; ?>
