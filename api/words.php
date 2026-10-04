@@ -49,7 +49,7 @@ $countStmt = $pdo->prepare("SELECT COUNT(*) $fromWhere");
 $countStmt->execute($params);
 $total = (int) $countStmt->fetchColumn();
 
-$selectSql = "SELECT w.id, w.dialect_term, w.etymology, w.audio_path, w.contributor,
+$selectSql = "SELECT w.id, w.dialect_term, w.pronunciation, w.english_translation, w.etymology, w.audio_path, w.contributor,
                d.id AS dialect_id, d.name AS dialect_name,
                c.id AS category_id, c.name AS category_name,
                p.id AS part_of_speech_id, p.name AS part_of_speech_name

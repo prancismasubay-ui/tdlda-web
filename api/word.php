@@ -10,7 +10,7 @@ if ($id === '' || !ctype_digit((string) $id)) {
 }
 
 $stmt = $pdo->prepare("
-    SELECT w.id, w.dialect_term, w.etymology, w.audio_path, w.contributor, w.status,
+    SELECT w.id, w.dialect_term, w.pronunciation, w.english_translation, w.etymology, w.audio_path, w.contributor, w.status,
            d.id AS dialect_id, d.name AS dialect_name,
            c.id AS category_id, c.name AS category_name,
            p.id AS part_of_speech_id, p.name AS part_of_speech_name
