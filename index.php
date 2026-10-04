@@ -141,8 +141,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
             <div>
               <div class="wc-heading">
                 <span class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></span>
-                <?php if (word_english_heading($w) !== ''): ?>
-                  <span class="wc-translation">- <?= htmlspecialchars(word_english_heading($w)) ?></span>
+                <?php if (word_heading_translation($w) !== ''): ?>
+                  <span class="wc-translation">- <?= htmlspecialchars(word_heading_translation($w)) ?></span>
                 <?php endif; ?>
               </div>
               <?php if ($w['pos_name']): ?><div class="wc-pos"><?= htmlspecialchars($w['pos_name']) ?></div><?php endif; ?>
@@ -158,14 +158,16 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
           </div>
 
           <div class="wc-meta">
-            <span class="pill">Dialect: <?= htmlspecialchars($w['dialect_name'] ?? 'Unknown') ?></span>
-            <?php if ($w['category_name']): ?><span class="pill"><?= htmlspecialchars($w['category_name']) ?></span><?php endif; ?>
+            <span class="pill dialect-tag">Dialect: <?= htmlspecialchars($w['dialect_name'] ?? 'Unknown') ?></span>
+            <?php if ($w['category_name']): ?><span class="pill category-tag"><?= htmlspecialchars($w['category_name']) ?></span><?php endif; ?>
           </div>
 
           <?php foreach ($w['definitions'] as $i => $d): ?>
             <div class="wc-definition">
-              <?php if (count($w['definitions']) > 1): ?><span class="wc-def-num"><?= $i + 1 ?></span><?php endif; ?>
-              <span class="wc-def-text"><strong>Definition:</strong> <?= htmlspecialchars($d['definition_english']) ?></span>
+              <?php if (!word_definition_is_redundant($w, $d['definition_english'])): ?>
+                <?php if (count($w['definitions']) > 1): ?><span class="wc-def-num"><?= $i + 1 ?></span><?php endif; ?>
+                <span class="wc-def-text"><strong>Definition:</strong> <?= htmlspecialchars($d['definition_english']) ?></span>
+              <?php endif; ?>
               <?php if (!empty($d['example_sentence_dialect']) || !empty($d['example_sentence_english'])): ?>
                 <div class="wc-example">
                   <?php if (!empty($d['example_sentence_dialect'])): ?><strong><?= htmlspecialchars($w['dialect_name']) ?>:</strong> <?= htmlspecialchars($d['example_sentence_dialect']) ?><br><?php endif; ?>
