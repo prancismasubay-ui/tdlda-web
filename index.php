@@ -99,7 +99,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 
   <form method="GET" class="search-bar-wrap">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-    <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search in English or <?= htmlspecialchars($currentDialectName) ?>...">
+    <input type="text" name="q" id="dictionarySearch" list="searchSuggestions" autocomplete="off" value="<?= htmlspecialchars($search) ?>" placeholder="Search in English or <?= htmlspecialchars($currentDialectName) ?>...">
+    <datalist id="searchSuggestions"></datalist>
     <?php if ($categoryId !== ''): ?><input type="hidden" name="category" value="<?= htmlspecialchars($categoryId) ?>"><?php endif; ?>
     <?php if ($dialectId !== ''): ?><input type="hidden" name="dialect" value="<?= htmlspecialchars($dialectId) ?>"><?php endif; ?>
   </form>
@@ -216,6 +217,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   </div>
 </div>
 
+<script src="assets/js/search-suggestions.js"></script>
 <script>
 function switchDialect(dialectId) {
   const url = new URL(window.location);
