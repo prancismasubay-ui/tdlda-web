@@ -8,7 +8,7 @@ function dictionary_search_clause(string $search): array
     $value = $ignoreSeparators ? $normalized : trim($search);
     $pattern = '%' . str_replace(['!', '%', '_'], ['!!', '!%', '!_'], $value) . '%';
     $expressions = [];
-    foreach (['w.dialect_term', 'wd.definition_english', 'ws.synonym_term'] as $column) {
+    foreach (['w.dialect_term', 'wd.definition_english', 'ws.synonym_term', 'w.english_translation'] as $column) {
         $expression = $ignoreSeparators ? "REPLACE(REPLACE($column, '-', ''), ' ', '')" : $column;
         $expressions[] = "LOWER($expression) LIKE LOWER(?) ESCAPE '!'";
     }
@@ -17,7 +17,7 @@ function dictionary_search_clause(string $search): array
             SELECT 1 FROM word_definitions wd WHERE wd.word_id = w.id AND {$expressions[1]}
         ) OR EXISTS (
             SELECT 1 FROM word_synonyms ws WHERE ws.word_id = w.id AND {$expressions[2]}
-        ))",
-        'params' => [$pattern, $pattern, $pattern],
+        ) OR {$expressions[3]})",
+        'params' => [$pattern, $pattern, $pattern, $pattern],
     ];
 }
