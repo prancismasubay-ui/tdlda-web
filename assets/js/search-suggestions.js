@@ -7,7 +7,7 @@ function dictionarySuggestions(words, query) {
   if (!normalized) return [];
   const suggestions = new Map();
   for (const word of words) {
-    const candidates = [word.dialect_term,
+    const candidates = [word.dialect_term, word.english_translation,
       ...(word.definitions || []).map(definition => definition.definition_english),
       ...(word.synonyms || [])];
     for (const value of candidates) {
