@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/word_presentation.php';
 require_login();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -17,6 +18,13 @@ $etymology     = trim($_POST['etymology'] ?? '');
 $status        = in_array($_POST['status'] ?? '', ['Published', 'Draft']) ? $_POST['status'] : 'Published';
 $contributor   = trim($_POST['contributor'] ?? '');
 $synonymsRaw   = trim($_POST['synonyms'] ?? '');
+try {
+    $pronunciation = word_optional_text($_POST['pronunciation'] ?? null);
+    $englishTranslation = word_optional_text($_POST['english_translation'] ?? null);
+} catch (InvalidArgumentException $e) {
+    header('Location: ../words.php?msg=' . urlencode($e->getMessage()));
+    exit;
+}
 
 $defDefinitions = $_POST['def_definition'] ?? [];
 $defExDialect   = $_POST['def_example_dialect'] ?? [];
@@ -44,11 +52,11 @@ try {
 
     if ($id !== '') {
         if ($audioFileName) {
-            $stmt = $pdo->prepare("UPDATE words SET dialect_id=?, category_id=?, part_of_speech_id=?, dialect_term=?, etymology=?, status=?, contributor=?, audio_path=? WHERE id=?");
-            $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $audioFileName, $id]);
+            $stmt = $pdo->prepare("UPDATE words SET dialect_id=?, category_id=?, part_of_speech_id=?, dialect_term=?, etymology=?, status=?, contributor=?, audio_path=?, pronunciation=?, english_translation=? WHERE id=?");
+            $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $audioFileName, $pronunciation, $englishTranslation, $id]);
         } else {
-            $stmt = $pdo->prepare("UPDATE words SET dialect_id=?, category_id=?, part_of_speech_id=?, dialect_term=?, etymology=?, status=?, contributor=? WHERE id=?");
-            $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $id]);
+            $stmt = $pdo->prepare("UPDATE words SET dialect_id=?, category_id=?, part_of_speech_id=?, dialect_term=?, etymology=?, status=?, contributor=?, pronunciation=?, english_translation=? WHERE id=?");
+            $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $pronunciation, $englishTranslation, $id]);
         }
         $wordId = (int) $id;
 
@@ -57,8 +65,8 @@ try {
         $pdo->prepare("DELETE FROM word_synonyms WHERE word_id = ?")->execute([$wordId]);
         $message = 'Entry updated successfully.';
     } else {
-        $stmt = $pdo->prepare("INSERT INTO words (dialect_id, category_id, part_of_speech_id, dialect_term, etymology, status, contributor, audio_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $audioFileName]);
+        $stmt = $pdo->prepare("INSERT INTO words (dialect_id, category_id, part_of_speech_id, dialect_term, etymology, status, contributor, audio_path, pronunciation, english_translation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $audioFileName, $pronunciation, $englishTranslation]);
         $wordId = (int) $pdo->lastInsertId();
         $message = 'Entry added successfully.';
     }

@@ -47,6 +47,8 @@ if ($format === 'json') {
             'category'     => $w['category_name'],
             'part_of_speech' => $w['pos_name'],
             'term'         => $w['dialect_term'],
+            'pronunciation' => $w['pronunciation'] ?? null,
+            'english_translation' => $w['english_translation'] ?? null,
             'etymology'    => $w['etymology'],
             'contributor'  => $w['contributor'],
             'status'       => $w['status'],
@@ -72,18 +74,19 @@ header('Content-Type: text/csv');
 header("Content-Disposition: attachment; filename=kalinga_dictionary_export_{$timestamp}.csv");
 
 $out = fopen('php://output', 'w');
-fputcsv($out, ['dialect', 'category', 'part_of_speech', 'term', 'definition', 'example_dialect', 'example_english', 'etymology', 'synonyms', 'contributor', 'status']);
+fputcsv($out, ['dialect', 'category', 'part_of_speech', 'term', 'definition', 'example_dialect', 'example_english', 'etymology', 'synonyms', 'contributor', 'status', 'pronunciation', 'english_translation']);
 
 foreach ($words as $w) {
     $synonymStr = implode('; ', $w['synonyms']);
     if (count($w['definitions']) === 0) {
-        fputcsv($out, [$w['dialect_name'], $w['category_name'], $w['pos_name'], $w['dialect_term'], '', '', '', $w['etymology'], $synonymStr, $w['contributor'], $w['status']]);
+        fputcsv($out, [$w['dialect_name'], $w['category_name'], $w['pos_name'], $w['dialect_term'], '', '', '', $w['etymology'], $synonymStr, $w['contributor'], $w['status'], $w['pronunciation'] ?? '', $w['english_translation'] ?? '']);
     }
     foreach ($w['definitions'] as $d) {
         fputcsv($out, [
             $w['dialect_name'], $w['category_name'], $w['pos_name'], $w['dialect_term'],
             $d['definition_english'], $d['example_sentence_dialect'], $d['example_sentence_english'],
             $w['etymology'], $synonymStr, $w['contributor'], $w['status'],
+            $w['pronunciation'] ?? '', $w['english_translation'] ?? '',
         ]);
     }
 }

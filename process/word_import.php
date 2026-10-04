@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/word_presentation.php';
 require_login();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['import_file']['name'])) {
@@ -40,6 +41,8 @@ if ($ext === 'json') {
                 'category'        => $item['category'] ?? '',
                 'part_of_speech'  => $item['part_of_speech'] ?? '',
                 'term'            => $item['term'] ?? '',
+                'pronunciation'   => $item['pronunciation'] ?? null,
+                'english_translation' => $item['english_translation'] ?? null,
                 'definition'      => $d['definition'] ?? '',
                 'example_dialect' => $d['example_dialect'] ?? '',
                 'example_english' => $d['example_english'] ?? '',
@@ -62,6 +65,8 @@ if ($ext === 'json') {
                 'category'        => $row['category'] ?? '',
                 'part_of_speech'  => $row['part_of_speech'] ?? '',
                 'term'            => $row['term'] ?? '',
+                'pronunciation'   => $row['pronunciation'] ?? null,
+                'english_translation' => $row['english_translation'] ?? null,
                 'definition'      => $row['definition'] ?? '',
                 'example_dialect' => $row['example_dialect'] ?? '',
                 'example_english' => $row['example_english'] ?? '',
@@ -141,6 +146,8 @@ try {
         $term = trim($row['term']);
         $definition = trim($row['definition']);
         $dialectName = trim($row['dialect']);
+        $pronunciation = word_optional_text($row['pronunciation']);
+        $englishTranslation = word_optional_text($row['english_translation']);
 
         if ($term === '' || $definition === '' || $dialectName === '') {
             $rowsSkipped++;
@@ -160,11 +167,11 @@ try {
             if ($existing) {
                 $wordId = (int) $existing['id'];
                 // Fill in category/POS/etymology/contributor if not already set
-                $pdo->prepare("UPDATE words SET category_id = COALESCE(category_id, ?), part_of_speech_id = COALESCE(part_of_speech_id, ?), etymology = COALESCE(NULLIF(etymology,''), ?), contributor = COALESCE(NULLIF(contributor,''), ?) WHERE id = ?")
-                    ->execute([$categoryId, $posId, trim($row['etymology']), trim($row['contributor']), $wordId]);
+                $pdo->prepare("UPDATE words SET category_id = COALESCE(category_id, ?), part_of_speech_id = COALESCE(part_of_speech_id, ?), etymology = COALESCE(NULLIF(etymology,''), ?), contributor = COALESCE(NULLIF(contributor,''), ?), pronunciation = COALESCE(NULLIF(pronunciation,''), ?), english_translation = COALESCE(NULLIF(english_translation,''), ?) WHERE id = ?")
+                    ->execute([$categoryId, $posId, trim($row['etymology']), trim($row['contributor']), $pronunciation, $englishTranslation, $wordId]);
             } else {
-                $stmt = $pdo->prepare("INSERT INTO words (dialect_id, category_id, part_of_speech_id, dialect_term, etymology, status, contributor) VALUES (?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$dialectId, $categoryId, $posId, $term, trim($row['etymology']), $status, trim($row['contributor'])]);
+                $stmt = $pdo->prepare("INSERT INTO words (dialect_id, category_id, part_of_speech_id, dialect_term, etymology, status, contributor, pronunciation, english_translation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$dialectId, $categoryId, $posId, $term, trim($row['etymology']), $status, trim($row['contributor']), $pronunciation, $englishTranslation]);
                 $wordId = (int) $pdo->lastInsertId();
                 $wordsCreated++;
             }
