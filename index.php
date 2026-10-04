@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/dictionary_search.php';
 
 $isLoggedIn = !empty($_SESSION['user_id']);
 
@@ -25,14 +26,9 @@ $sql = "SELECT w.*, c.name AS category_name, d.name AS dialect_name, p.name AS p
         WHERE w.status = 'Published'";
 $params = [];
 if ($search !== '') {
-    $sql .= " AND (LOWER(w.dialect_term) LIKE LOWER(?) OR EXISTS (
-                SELECT 1 FROM word_definitions wd WHERE wd.word_id = w.id AND LOWER(wd.definition_english) LIKE LOWER(?)
-              ) OR EXISTS (
-                SELECT 1 FROM word_synonyms ws WHERE ws.word_id = w.id AND LOWER(ws.synonym_term) LIKE LOWER(?)
-              ))";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+    $searchClause = dictionary_search_clause($search);
+    $sql .= $searchClause['sql'];
+    $params = $searchClause['params'];
 }
 if ($categoryId !== '') { $sql .= " AND w.category_id = ?"; $params[] = $categoryId; }
 if ($dialectId !== '')  { $sql .= " AND w.dialect_id = ?"; $params[] = $dialectId; }
