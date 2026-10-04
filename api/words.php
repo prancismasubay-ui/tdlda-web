@@ -2,7 +2,7 @@
 /**
  * GET /api/words.php
  * Query params (all optional):
- *   q          - search text (matches term or any definition)
+ *   q          - case-insensitive search text (matches term, definition, or synonym)
  *   dialect    - dialect id
  *   category   - category id
  *   pos        - part_of_speech id
@@ -36,10 +36,14 @@ $fromWhere = "FROM words w
 $params = [];
 
 if ($search !== '') {
-    $fromWhere .= " AND (w.dialect_term LIKE ? OR EXISTS (
+    $fromWhere .= " AND (LOWER(w.dialect_term) LIKE LOWER(?) OR EXISTS (
                 SELECT 1 FROM word_definitions wd
-                WHERE wd.word_id = w.id AND wd.definition_english LIKE ?
+                WHERE wd.word_id = w.id AND LOWER(wd.definition_english) LIKE LOWER(?)
+              ) OR EXISTS (
+                SELECT 1 FROM word_synonyms ws
+                WHERE ws.word_id = w.id AND LOWER(ws.synonym_term) LIKE LOWER(?)
               ))";
+    $params[] = "%$search%";
     $params[] = "%$search%";
     $params[] = "%$search%";
 }
@@ -56,7 +60,7 @@ $selectSql = "SELECT w.id, w.dialect_term, w.etymology, w.audio_path, w.contribu
                c.id AS category_id, c.name AS category_name,
                p.id AS part_of_speech_id, p.name AS part_of_speech_name
                $fromWhere
-               ORDER BY w.dialect_id ASC, w.dialect_term ASC
+               ORDER BY w.dialect_term ASC
                LIMIT $limit OFFSET $offset";
 $stmt = $pdo->prepare($selectSql);
 $stmt->execute($params);
