@@ -25,10 +25,10 @@ $sql = "SELECT w.*, c.name AS category_name, d.name AS dialect_name, p.name AS p
         WHERE w.status = 'Published'";
 $params = [];
 if ($search !== '') {
-    $sql .= " AND (w.dialect_term LIKE ? OR EXISTS (
-                SELECT 1 FROM word_definitions wd WHERE wd.word_id = w.id AND wd.definition_english LIKE ?
+    $sql .= " AND (LOWER(w.dialect_term) LIKE LOWER(?) OR EXISTS (
+                SELECT 1 FROM word_definitions wd WHERE wd.word_id = w.id AND LOWER(wd.definition_english) LIKE LOWER(?)
               ) OR EXISTS (
-                SELECT 1 FROM word_synonyms ws WHERE ws.word_id = w.id AND ws.synonym_term LIKE ?
+                SELECT 1 FROM word_synonyms ws WHERE ws.word_id = w.id AND LOWER(ws.synonym_term) LIKE LOWER(?)
               ))";
     $params[] = "%$search%";
     $params[] = "%$search%";
