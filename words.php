@@ -141,7 +141,7 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
             <td><span class="badge <?= $w['status'] === 'Published' ? 'published' : 'draft' ?>"><?= $w['status'] ?></span></td>
             <td>
               <div class="action-icons">
-                <button title="Edit" onclick='openEditModal(<?= json_encode($w) ?>)'>
+                <button title="Edit" onclick='openEditModal(<?= htmlspecialchars(json_encode($w), ENT_QUOTES, 'UTF-8') ?>)'>
                   <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
                 </button>
                 <a class="del" title="Delete" href="process/word_delete.php?id=<?= $w['id'] ?>" onclick="return confirm('Delete this entry and all its definitions/synonyms?')">
@@ -197,6 +197,17 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
         <div class="form-group full">
           <label>Etymology / Notes</label>
           <textarea name="etymology" id="f_etymology" placeholder="Word origin, cultural notes, related roots..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="f_translation">English Translation</label>
+          <input type="text" name="english_translation" id="f_translation" maxlength="255" placeholder="e.g. Thank you">
+        </div>
+        <div class="form-group">
+          <label for="f_pronunciation">Pronunciation</label>
+          <input type="text" name="pronunciation" id="f_pronunciation" maxlength="255" placeholder="e.g. Sa-ra-nat">
         </div>
       </div>
 
@@ -282,6 +293,8 @@ function openAddModal() {
   document.getElementById('f_id').value = '';
   document.getElementById('f_dialect').value = defaultDialectId;
   document.getElementById('f_term').value = '';
+  document.getElementById('f_translation').value = '';
+  document.getElementById('f_pronunciation').value = '';
   document.getElementById('f_pos').value = '';
   document.getElementById('f_category').value = '';
   document.getElementById('f_etymology').value = '';
@@ -298,6 +311,8 @@ function openEditModal(w) {
   document.getElementById('f_id').value = w.id;
   document.getElementById('f_dialect').value = w.dialect_id;
   document.getElementById('f_term').value = w.dialect_term;
+  document.getElementById('f_translation').value = w.english_translation || '';
+  document.getElementById('f_pronunciation').value = w.pronunciation || '';
   document.getElementById('f_pos').value = w.part_of_speech_id || '';
   document.getElementById('f_category').value = w.category_id || '';
   document.getElementById('f_etymology').value = w.etymology || '';
