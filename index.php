@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/dictionary_search.php';
+require_once __DIR__ . '/includes/word_presentation.php';
 
 $isLoggedIn = !empty($_SESSION['user_id']);
 
@@ -138,8 +139,14 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
         <div class="word-card">
           <div class="wc-top">
             <div>
-              <div class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></div>
+              <div class="wc-heading">
+                <span class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></span>
+                <?php if (word_english_heading($w) !== ''): ?>
+                  <span class="wc-translation">- <?= htmlspecialchars(word_english_heading($w)) ?></span>
+                <?php endif; ?>
+              </div>
               <?php if ($w['pos_name']): ?><div class="wc-pos"><?= htmlspecialchars($w['pos_name']) ?></div><?php endif; ?>
+              <?php if (!empty($w['pronunciation'])): ?><div class="wc-pronunciation">Pronunciation: <?= htmlspecialchars($w['pronunciation']) ?></div><?php endif; ?>
             </div>
             <?php if (!empty($w['audio_path'])): ?>
               <button class="audio-btn" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()" title="Play pronunciation">
@@ -158,7 +165,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
           <?php foreach ($w['definitions'] as $i => $d): ?>
             <div class="wc-definition">
               <?php if (count($w['definitions']) > 1): ?><span class="wc-def-num"><?= $i + 1 ?></span><?php endif; ?>
-              <span class="wc-def-text"><?= htmlspecialchars($d['definition_english']) ?></span>
+              <span class="wc-def-text"><strong>Definition:</strong> <?= htmlspecialchars($d['definition_english']) ?></span>
               <?php if (!empty($d['example_sentence_dialect']) || !empty($d['example_sentence_english'])): ?>
                 <div class="wc-example">
                   <?php if (!empty($d['example_sentence_dialect'])): ?><strong><?= htmlspecialchars($w['dialect_name']) ?>:</strong> <?= htmlspecialchars($d['example_sentence_dialect']) ?><br><?php endif; ?>
