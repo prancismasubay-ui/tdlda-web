@@ -1,5 +1,9 @@
+function suggestionSearchKey(value) {
+  return value.trim().toLowerCase().replace(/[- ]/g, '');
+}
+
 function dictionarySuggestions(words, query) {
-  const normalized = query.trim().toLowerCase();
+  const normalized = suggestionSearchKey(query);
   if (!normalized) return [];
   const suggestions = new Map();
   for (const word of words) {
@@ -10,14 +14,14 @@ function dictionarySuggestions(words, query) {
       if (typeof value !== 'string') continue;
       const text = value.trim();
       const key = text.toLowerCase();
-      if (key.includes(normalized) && !suggestions.has(key)) {
+      if (suggestionSearchKey(text).includes(normalized) && !suggestions.has(key)) {
         suggestions.set(key, { text, dialect: word.dialect_name || '' });
       }
     }
   }
   return Array.from(suggestions.values()).sort((a, b) =>
-    Number(b.text.toLowerCase().startsWith(normalized)) -
-    Number(a.text.toLowerCase().startsWith(normalized)) || a.text.localeCompare(b.text)
+    Number(suggestionSearchKey(b.text).startsWith(normalized)) -
+    Number(suggestionSearchKey(a.text).startsWith(normalized)) || a.text.localeCompare(b.text)
   ).slice(0, 8);
 }
 
