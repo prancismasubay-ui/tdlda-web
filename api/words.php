@@ -12,6 +12,7 @@
  * Only Published entries are returned.
  */
 require_once __DIR__ . '/_bootstrap.php';
+require_once __DIR__ . '/../includes/dictionary_search.php';
 
 function api_url_base(): string {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
@@ -36,16 +37,9 @@ $fromWhere = "FROM words w
 $params = [];
 
 if ($search !== '') {
-    $fromWhere .= " AND (LOWER(w.dialect_term) LIKE LOWER(?) OR EXISTS (
-                SELECT 1 FROM word_definitions wd
-                WHERE wd.word_id = w.id AND LOWER(wd.definition_english) LIKE LOWER(?)
-              ) OR EXISTS (
-                SELECT 1 FROM word_synonyms ws
-                WHERE ws.word_id = w.id AND LOWER(ws.synonym_term) LIKE LOWER(?)
-              ))";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+    $searchClause = dictionary_search_clause($search);
+    $fromWhere .= $searchClause['sql'];
+    $params = $searchClause['params'];
 }
 if ($dialectId !== '')  { $fromWhere .= " AND w.dialect_id = ?"; $params[] = $dialectId; }
 if ($categoryId !== '') { $fromWhere .= " AND w.category_id = ?"; $params[] = $categoryId; }
