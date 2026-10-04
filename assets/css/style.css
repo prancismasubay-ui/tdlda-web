@@ -320,6 +320,8 @@ table.data-table tr:hover { background: #fafbfc; }
 .word-card .wc-pronunciation { display:inline-block; max-width:100%; overflow-wrap:anywhere; margin-top:8px; padding:4px 8px; border:1px solid var(--border-color); border-radius:8px; font-size:13px; color:var(--text-muted); }
 .word-card .wc-pos { font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-top:1px; }
 .word-card .wc-meta { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0 12px; }
+.word-card .dialect-tag { background:var(--header-green-dark); color:#fff; font-weight:700; }
+.word-card .category-tag { background:#f3f4f6; color:#6b7280; font-weight:400; }
 
 .word-card .wc-definition { margin-bottom: 10px; font-size: 14px; color: var(--text-dark); position:relative; }
 .word-card .wc-def-num {
