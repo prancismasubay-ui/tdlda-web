@@ -306,36 +306,62 @@ table.data-table tr:hover { background: #fafbfc; }
 
 .result-count { color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px; }
 
-.word-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+.word-grid { display:grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items:start; }
 .word-card {
-  background:#fff; border:1px solid var(--border-color); border-radius: 12px; padding: 20px;
-  transition: box-shadow .15s ease, transform .15s ease;
+  --card-bg: var(--sidebar-bg);
+  --card-border: var(--border-color);
+  --card-text: var(--text-dark);
+  --card-muted: var(--text-muted);
+  --card-green: var(--header-green-dark);
+  --card-accent-bg: var(--active-blue-bg);
+  --card-accent-text: var(--active-blue);
+  --card-subtle-bg: #f9fafb;
+  background:var(--card-bg); border:0.5px solid var(--card-border); border-radius:12px; padding:20px;
+  min-width:0; color:var(--card-text); font-weight:400; overflow-wrap:anywhere;
 }
-.word-card:hover { box-shadow: 0 8px 22px rgba(0,0,0,.07); transform: translateY(-2px); }
-.word-card .wc-top { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:6px; }
-.word-card .wc-term { font-size: 19px; font-weight:800; color: var(--header-green-dark); }
-.word-card .wc-top > div { min-width:0; flex:1; }
-.word-card .wc-heading { display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 8px; overflow-wrap:anywhere; }
-.word-card .wc-translation { font-size:17px; font-weight:600; color:var(--text-dark); }
-.word-card .wc-pronunciation { display:inline-block; max-width:100%; overflow-wrap:anywhere; margin-top:8px; padding:4px 8px; border:1px solid var(--border-color); border-radius:8px; font-size:13px; color:var(--text-muted); }
-.word-card .wc-pos { font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--text-muted); margin-top:1px; }
-.word-card .wc-meta { display:flex; gap:8px; flex-wrap:wrap; margin: 10px 0 12px; }
-.word-card .dialect-tag { background:var(--header-green-dark); color:#fff; font-weight:700; }
-.word-card .category-tag { background:#f3f4f6; color:#6b7280; font-weight:400; }
-
-.word-card .wc-definition { margin-bottom: 10px; font-size: 14px; color: var(--text-dark); position:relative; }
-.word-card .wc-def-num {
-  display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%;
-  background: var(--active-blue-bg); color: var(--active-blue); font-size:11px; font-weight:700; margin-right:6px;
+.word-card .wc-meta { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.word-card .pill { border-radius:8px; padding:3px 10px; font-size:12px; line-height:1.4; }
+.word-card .dialect-tag { background:var(--card-accent-bg); color:var(--card-accent-text); font-weight:500; }
+.word-card .category-tag { background:var(--card-subtle-bg); color:var(--card-text); font-weight:400; }
+.word-card .wc-term { font-size:32px; line-height:1.2; font-weight:500; color:var(--card-green); margin-bottom:8px; }
+.word-card .wc-details { display:flex; align-items:center; flex-wrap:wrap; gap:8px 12px; min-height:28px; }
+.word-card .wc-pronunciation { font-size:14px; color:var(--card-text); }
+.word-card .wc-pos { margin-left:auto; font-size:13px; font-style:italic; text-transform:lowercase; font-weight:400; letter-spacing:0; }
+.word-card .wc-listen { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:28px; padding:3px 10px; border:0.5px solid var(--card-border); border-radius:6px; background:var(--card-bg); color:var(--card-text); font:inherit; font-size:13px; cursor:pointer; }
+.word-card .wc-listen:hover { background:var(--card-subtle-bg); }
+.word-card .wc-listen:focus-visible { outline:2px solid var(--card-accent-text); outline-offset:3px; }
+.word-card .wc-listen svg { flex:none; }
+.word-card .wc-meanings { border-top:0.5px solid var(--card-border); margin-top:16px; padding-top:16px; }
+.word-card .wc-definition + .wc-definition { margin-top:18px; }
+.word-card .wc-meaning { display:flex; align-items:baseline; gap:10px; }
+.word-card .wc-def-num { color:var(--card-muted); font-size:14px; flex:none; min-width:10px; }
+.word-card .wc-def-text { font-size:20px; line-height:1.4; font-weight:400; }
+.word-card .wc-explanation { font-size:14px; color:var(--card-muted); line-height:1.5; margin-top:6px; }
+.word-card .wc-example { background:var(--card-subtle-bg); border-radius:8px; padding:12px 14px; line-height:1.5; margin-top:10px; }
+.word-card .wc-example-dialect { color:var(--card-green); font-size:14px; font-weight:500; }
+.word-card .wc-example-english { color:var(--card-muted); font-size:13px; }
+.word-card .wc-example p + p { margin-top:2px; }
+.word-card .wc-info { display:grid; grid-template-columns:94px minmax(0, 1fr); gap:8px 12px; border-top:0.5px solid var(--card-border); margin-top:18px; padding-top:14px; font-size:13px; line-height:1.5; }
+.word-card .wc-info dt { color:var(--card-text); }
+.word-card .wc-info dd { min-width:0; }
+.word-card .wc-synonyms { display:flex; flex-wrap:wrap; gap:6px; }
+.word-card .wc-synonym { border:0.5px solid var(--card-border); border-radius:8px; padding:1px 8px; color:var(--card-text); }
+.word-card .wc-origin { color:var(--card-muted); }
+@media (max-width: 700px) {
+  .word-grid { grid-template-columns:minmax(0, 1fr); }
 }
-.word-card .wc-example {
-  background:#f9fafb; border-radius:8px; padding: 9px 12px; font-size: 12.5px; color:#4b5563; line-height:1.6; margin-top:6px;
+@media (prefers-color-scheme: dark) {
+  .word-card {
+    --card-bg:#202323;
+    --card-border:#414747;
+    --card-text:#f1f3f3;
+    --card-muted:#b3bcbc;
+    --card-green:#8cd79a;
+    --card-accent-bg:#213b59;
+    --card-accent-text:#a8d0ff;
+    --card-subtle-bg:#292e2e;
+  }
 }
-.word-card .wc-example strong { color: var(--text-dark); }
-
-.word-card .wc-synonyms { font-size:12.5px; color:var(--text-muted); margin-top: 8px; }
-.word-card .wc-synonyms strong { color: var(--text-dark); }
-.word-card .wc-etymology { font-size:12px; color:#9ca3af; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
 
 .public-footer {
   text-align:center; padding: 30px 20px; color: var(--text-muted); font-size:12.5px;
