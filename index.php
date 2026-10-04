@@ -68,7 +68,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 <meta name="theme-color" content="#2f6b2f">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="assets/images/logo.svg">
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=<?= substr(hash_file('sha256', __DIR__ . '/assets/css/style.css'), 0, 12) ?>">
 </head>
 <body>
 
