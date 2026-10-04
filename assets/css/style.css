@@ -313,8 +313,8 @@ table.data-table tr:hover { background: #fafbfc; }
   --card-text: var(--text-dark);
   --card-muted: var(--text-muted);
   --card-green: var(--header-green-dark);
-  --card-accent-bg: var(--active-blue-bg);
-  --card-accent-text: var(--active-blue);
+  --card-accent-bg: #cfe2ff;
+  --card-accent-text: #0757ad;
   --card-subtle-bg: #f9fafb;
   background:var(--card-bg); border:0.5px solid var(--card-border); border-radius:12px; padding:20px;
   min-width:0; color:var(--card-text); font-weight:400; overflow-wrap:anywhere;
