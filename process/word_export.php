@@ -64,14 +64,14 @@ if ($format === 'json') {
     }, $words);
 
     header('Content-Type: application/json');
-    header("Content-Disposition: attachment; filename=kalinga_dictionary_export_{$timestamp}.json");
+    header("Content-Disposition: attachment; filename=tinglayan_dictionary_export_{$timestamp}.json");
     echo json_encode($out, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 // CSV: one row per definition (a word with 2 definitions produces 2 rows sharing the same term)
 header('Content-Type: text/csv');
-header("Content-Disposition: attachment; filename=kalinga_dictionary_export_{$timestamp}.csv");
+header("Content-Disposition: attachment; filename=tinglayan_dictionary_export_{$timestamp}.csv");
 
 $out = fopen('php://output', 'w');
 fputcsv($out, ['dialect', 'category', 'part_of_speech', 'term', 'definition', 'example_dialect', 'example_english', 'etymology', 'synonyms', 'contributor', 'status', 'pronunciation', 'english_translation']);
