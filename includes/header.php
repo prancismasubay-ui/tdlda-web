@@ -2,7 +2,7 @@
 <div class="topbar">
   <div class="brand">
     <img src="assets/images/logo.svg" alt="Logo">
-    <div class="title">KALINGA DIALECTS<br>LEARNING DICTIONARY</div>
+    <div class="title">TINGLAYAN DIALECTS<br>LEARNING DICTIONARY</div>
   </div>
   <div class="userbox">
     <a href="index.php" target="_blank" style="color:#fff; opacity:.9; font-weight:500; margin-right:18px; display:inline-flex; align-items:center; gap:6px;">

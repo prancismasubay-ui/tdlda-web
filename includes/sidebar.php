@@ -10,7 +10,7 @@ function nav_active($page, $current) { return $page === $current ? 'active' : ''
     </span>
   </div>
 
-  <div class="section-label">KPTO-KDLD</div>
+  <div class="section-label">KPTO-TDLD</div>
 
   <div class="section-label">GENERAL</div>
   <a class="nav-item <?= nav_active('dashboard.php', $current) ?>" href="dashboard.php">
