@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>API Docs - Kalinga Dialects Learning Dictionary</title>
+<title>API Docs - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../assets/css/style.css">
 <style>
@@ -16,7 +16,7 @@
 </style>
 </head>
 <body>
-  <h1>Kalinga Dialects Learning Dictionary &mdash; REST API</h1>
+  <h1>Tinglayan Dialects Learning Dictionary &mdash; REST API</h1>
   <p style="color:var(--text-muted);">Read-only, no API key required. Returns JSON. CORS enabled for all origins &mdash; suitable for a mobile app or other frontend to consume.</p>
 
   <h2>GET /api/dialects.php</h2>
