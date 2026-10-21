@@ -1,5 +1,5 @@
 /**
- * Kalinga Dialects Learning Dictionary — Service Worker
+ * Tinglayan Dialects Learning Dictionary — Service Worker
  * Gives the PUBLIC dictionary basic offline access:
  *  - Static assets (CSS, logo, audio) are cached on first use and served
  *    from cache thereafter (cache-first).

@@ -9,7 +9,7 @@ $users = $pdo->query("SELECT id, full_name, username, role, created_at FROM user
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Admin Users - Kalinga Dialects Learning Dictionary</title>
+<title>Admin Users - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>

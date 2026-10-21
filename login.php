@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login - Kalinga Dialects Learning Dictionary</title>
+<title>Login - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <div class="login-wrap">
     <div class="login-card">
       <img src="assets/images/logo.svg" alt="Logo">
-      <h1>Kalinga Dialects Learning Dictionary</h1>
+      <h1>Tinglayan Dialects Learning Dictionary</h1>
       <p class="sub">Kalinga Provincial Tourism Office &mdash; Admin Panel</p>
 
       <?php if ($error): ?>

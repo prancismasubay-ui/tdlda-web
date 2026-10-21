@@ -47,7 +47,7 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dictionary Entries - Kalinga Dialects Learning Dictionary</title>
+<title>Dictionary Entries - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>

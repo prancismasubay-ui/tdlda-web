@@ -1,7 +1,7 @@
 {
-  "name": "Kalinga Dialects Learning Dictionary",
-  "short_name": "Kalinga Dictionary",
-  "description": "A free, open dictionary preserving the languages of Kalinga.",
+  "name": "Tinglayan Dialects Learning Dictionary",
+  "short_name": "Tinglayan Dialects Learning Dictionary",
+  "description": "A free, open dictionary preserving the languages of Tinglayan.",
   "start_url": "./index.php",
   "scope": "./",
   "display": "standalone",

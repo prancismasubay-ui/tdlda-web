@@ -62,9 +62,9 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Kalinga Dialects Learning Dictionary</title>
+<title>Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A free, open dictionary for Kalinga's indigenous dialects — search words, hear pronunciations, and see example sentences.">
+<meta name="description" content="A free, open dictionary for Tinglayan's indigenous dialects — search words, hear pronunciations, and see example sentences.">
 <meta name="theme-color" content="#2f6b2f">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="assets/images/logo.svg">
@@ -75,7 +75,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 <div class="public-topbar">
   <div class="brand">
     <img src="assets/images/logo.svg" alt="Logo">
-    <div class="title">Kalinga Dialects<br>Learning Dictionary</div>
+    <div class="title">Tinglayan Dialects<br>Learning Dictionary</div>
   </div>
   <?php if ($isLoggedIn): ?>
     <a href="dashboard.php" class="btn-login">
@@ -91,8 +91,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 </div>
 
 <div class="public-hero">
-  <h1>Kalinga Dialects Learning Dictionary</h1>
-  <p>A free, open dictionary preserving the languages of Kalinga. Search a word, hear how it's pronounced, and see it used in a real sentence &mdash; no account needed.</p>
+  <h1>Tinglayan Dialects Learning Dictionary</h1>
+  <p>A free, open dictionary preserving the languages of Tinglayan. Search a word, hear how it's pronounced, and see it used in a real sentence &mdash; no account needed.</p>
 
   <form method="GET" class="search-bar-wrap">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -218,8 +218,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 </div>
 
 <div class="public-footer">
-  Kalinga Dialects Learning Dictionary &mdash; a capstone project developed with the Kalinga Provincial Tourism Office.<br>
-  Documenting and preserving Kalinga's indigenous dialects, one word at a time.
+  Tinglayan Dialects Learning Dictionary &mdash; a capstone project developed with the Kalinga Provincial Tourism Office.<br>
+  Documenting and preserving Tinglayan's indigenous dialects, one word at a time.
 </div>
 
 <!-- Login Modal -->
@@ -229,7 +229,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
     </button>
     <img src="assets/images/logo.svg" alt="Logo">
-    <h3>Kalinga Dialects Learning Dictionary</h3>
+    <h3>Tinglayan Dialects Learning Dictionary</h3>
     <p class="sub">Kalinga Provincial Tourism Office &mdash; Admin Panel</p>
 
     <div class="error-msg" id="loginModalError"></div>

@@ -15,7 +15,7 @@ $dialects = $pdo->query("
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dialects - Kalinga Dialects Learning Dictionary</title>
+<title>Dialects - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -28,7 +28,7 @@ $dialects = $pdo->query("
     <div class="page-header">
       <div>
         <h1>Dialects</h1>
-        <p class="subtitle">Kalinga's municipal dialects covered by the dictionary. Tinglayan is the current capstone pilot &mdash; add more as the project expands province-wide.</p>
+        <p class="subtitle">Tinglayan's local dialects covered by the dictionary.</p>
       </div>
       <div class="actions">
         <button class="btn btn-primary" onclick="openAddModal()">

@@ -45,7 +45,7 @@ $pageTitle = 'Dashboard';
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard - Kalinga Dialects Learning Dictionary</title>
+<title>Dashboard - Tinglayan Dialects Learning Dictionary</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
