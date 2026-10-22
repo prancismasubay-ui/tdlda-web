@@ -210,6 +210,9 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
               <?php if ($origin !== ''): ?><dt>Word origin</dt><dd class="wc-origin"><?= htmlspecialchars($origin) ?></dd><?php endif; ?>
             </dl>
           <?php endif; ?>
+          <button type="button" class="wc-feedback" data-feedback-word-id="<?= (int)$w['id'] ?>"
+            data-feedback-term="<?= htmlspecialchars($w['dialect_term'], ENT_QUOTES, 'UTF-8') ?>"
+            data-feedback-dialect="<?= htmlspecialchars($w['dialect_name'] ?? '', ENT_QUOTES, 'UTF-8') ?>">Give feedback on this word</button>
         </div>
       <?php endforeach; ?>
     </div>
@@ -221,6 +224,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   Tinglayan Dialects Learning Dictionary &mdash; a capstone project developed with the Kalinga Provincial Tourism Office.<br>
   Documenting and preserving Tinglayan's indigenous dialects, one word at a time.
 </div>
+
+<?php include __DIR__ . '/includes/word_feedback_dialog.php'; ?>
 
 <!-- Login Modal -->
 <div class="modal-overlay" id="loginModal">
@@ -249,6 +254,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 </div>
 
 <script src="assets/js/search-suggestions.js"></script>
+<script src="assets/js/word-feedback.js?v=<?= substr(hash_file('sha256', __DIR__ . '/assets/js/word-feedback.js'), 0, 12) ?>"></script>
 <script>
 function switchDialect(dialectId) {
   const url = new URL(window.location);
