@@ -11,11 +11,13 @@
  *    NOT intercepted — they always go straight to the network.
  */
 
-const CACHE_NAME = 'kalinga-dictionary-v1';
+const CACHE_NAME = 'tinglayan-dictionary-v2-seal';
 const PRECACHE_URLS = [
   'index.php',
   'assets/css/style.css',
-  'assets/images/logo.svg',
+  'assets/images/tinglayan-seal.png',
+  'assets/images/tinglayan-icon-192.png',
+  'assets/images/tinglayan-favicon.png',
   'manifest.json',
 ];
 

@@ -67,14 +67,14 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 <meta name="description" content="A free, open dictionary for Tinglayan's indigenous dialects — search words, hear pronunciations, and see example sentences.">
 <meta name="theme-color" content="#2f6b2f">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="assets/images/logo.svg">
+<link rel="icon" type="image/png" href="assets/images/tinglayan-favicon.png">
 <link rel="stylesheet" href="assets/css/style.css?v=<?= substr(hash_file('sha256', __DIR__ . '/assets/css/style.css'), 0, 12) ?>">
 </head>
 <body>
 
 <div class="public-topbar">
   <div class="brand">
-    <img src="assets/images/logo.svg" alt="Logo">
+    <img src="assets/images/tinglayan-seal.png" alt="Municipality of Tinglayan official seal">
     <div class="title">Tinglayan Dialects<br>Learning Dictionary</div>
   </div>
   <?php if ($isLoggedIn): ?>
@@ -233,7 +233,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
     <button class="close-x" onclick="closeLoginModal()">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
     </button>
-    <img src="assets/images/logo.svg" alt="Logo">
+    <img src="assets/images/tinglayan-seal.png" alt="Municipality of Tinglayan official seal">
     <h3>Tinglayan Dialects Learning Dictionary</h3>
     <p class="sub">Kalinga Provincial Tourism Office &mdash; Admin Panel</p>
 

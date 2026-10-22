@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
   <div class="login-wrap">
     <div class="login-card">
-      <img src="assets/images/logo.svg" alt="Logo">
+      <img src="assets/images/tinglayan-seal.png" alt="Municipality of Tinglayan official seal">
       <h1>Tinglayan Dialects Learning Dictionary</h1>
       <p class="sub">Kalinga Provincial Tourism Office &mdash; Admin Panel</p>
 
