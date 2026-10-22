@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
-require_login();
+require_administrator();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../users.php');
@@ -11,7 +11,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $fullName = trim($_POST['full_name'] ?? '');
 $username = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
-$role     = in_array($_POST['role'] ?? '', ['Administrator', 'Editor']) ? $_POST['role'] : 'Editor';
+$role     = $_POST['role'] ?? 'Editor';
+
+if (!in_array($role, ['Administrator', 'Editor'], true)) {
+    header('Location: ../users.php?err=' . urlencode('Choose a valid account role.'));
+    exit;
+}
 
 if ($fullName === '' || $username === '' || strlen($password) < 6) {
     header('Location: ../users.php?err=' . urlencode('All fields are required and password must be at least 6 characters.'));

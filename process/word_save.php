@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/word_presentation.php';
+require_once __DIR__ . '/../includes/audio_upload.php';
 require_login();
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -35,16 +36,12 @@ if ($term === '' || !$dialectId || count(array_filter($defDefinitions, fn($d) =>
     exit;
 }
 
-// Handle optional audio upload
-$audioFileName = null;
-if (!empty($_FILES['audio_file']['name'])) {
-    $allowedExt = ['mp3', 'wav', 'ogg', 'm4a'];
-    $ext = strtolower(pathinfo($_FILES['audio_file']['name'], PATHINFO_EXTENSION));
-    if (in_array($ext, $allowedExt) && $_FILES['audio_file']['error'] === UPLOAD_ERR_OK) {
-        $audioFileName = 'audio_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $destDir = __DIR__ . '/../uploads/audio/';
-        move_uploaded_file($_FILES['audio_file']['tmp_name'], $destDir . $audioFileName);
-    }
+$audioDirectory = __DIR__ . '/../uploads/audio';
+try {
+    $audioFileName = store_word_audio($_FILES['audio_file'] ?? [], $audioDirectory);
+} catch (RuntimeException $e) {
+    header('Location: ../words.php?msg=' . urlencode($e->getMessage()));
+    exit;
 }
 
 try {
@@ -94,7 +91,13 @@ try {
 
     $pdo->commit();
 } catch (Exception $e) {
-    $pdo->rollBack();
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    if ($audioFileName !== null) {
+        $failedAudio = $audioDirectory . DIRECTORY_SEPARATOR . $audioFileName;
+        if (is_file($failedAudio) && !unlink($failedAudio)) {
+            error_log('Could not remove audio from a failed word save: ' . $audioFileName);
+        }
+    }
     header('Location: ../words.php?msg=' . urlencode('Error saving entry: ' . $e->getMessage()));
     exit;
 }
