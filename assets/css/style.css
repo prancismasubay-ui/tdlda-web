@@ -347,6 +347,16 @@ table.data-table tr:hover { background: #fafbfc; }
 .word-card .wc-synonyms { display:flex; flex-wrap:wrap; gap:6px; }
 .word-card .wc-synonym { border:0.5px solid var(--card-border); border-radius:8px; padding:1px 8px; color:var(--card-text); }
 .word-card .wc-origin { color:var(--card-muted); }
+.word-card .wc-feedback { margin-top:16px; padding:8px 10px; border:1px solid var(--card-border); border-radius:6px; background:var(--card-bg); color:var(--card-text); font:inherit; font-size:13px; cursor:pointer; text-align:left; }
+.word-card .wc-feedback:hover { background:var(--card-subtle-bg); }
+.word-card .wc-feedback:focus-visible { outline:2px solid var(--card-accent-text); outline-offset:3px; }
+.word-feedback-dialog { margin:auto; padding:24px; width:540px; max-width:92vw; max-height:88vh; overflow:auto; border:1px solid var(--border-color); border-radius:8px; background:var(--sidebar-bg); color:var(--text-dark); }
+.word-feedback-dialog::backdrop { background:rgba(0,0,0,.45); }
+.word-feedback-dialog h2 { font-size:20px; font-weight:500; margin-bottom:8px; }
+.word-feedback-dialog #feedbackWordLabel { margin-bottom:18px; color:var(--text-muted); overflow-wrap:anywhere; }
+.word-feedback-dialog .form-group { margin-bottom:14px; }
+.word-feedback-dialog #wordFeedbackStatus { margin-top:12px; }
+@media (max-width: 480px) { .word-feedback-dialog .form-grid { grid-template-columns:minmax(0, 1fr); gap:0; } }
 @media (max-width: 700px) {
   .word-grid { grid-template-columns:minmax(0, 1fr); }
 }
