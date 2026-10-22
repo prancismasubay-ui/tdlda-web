@@ -14,13 +14,6 @@
 require_once __DIR__ . '/_bootstrap.php';
 require_once __DIR__ . '/../includes/dictionary_search.php';
 
-function api_url_base(): string {
-    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-    $path   = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
-    return "{$scheme}://{$host}{$path}/";
-}
-
 $search     = trim($_GET['q'] ?? '');
 $dialectId  = $_GET['dialect'] ?? '';
 $categoryId = $_GET['category'] ?? '';
@@ -63,13 +56,12 @@ $words = $stmt->fetchAll();
 $defStmt = $pdo->prepare("SELECT definition_english, example_sentence_dialect, example_sentence_english FROM word_definitions WHERE word_id = ? ORDER BY sort_order, id");
 $synStmt = $pdo->prepare("SELECT synonym_term FROM word_synonyms WHERE word_id = ? ORDER BY id");
 
-$base = api_url_base();
 foreach ($words as &$w) {
     $defStmt->execute([$w['id']]);
     $w['definitions'] = $defStmt->fetchAll();
     $synStmt->execute([$w['id']]);
     $w['synonyms'] = array_column($synStmt->fetchAll(), 'synonym_term');
-    $w['audio_url'] = $w['audio_path'] ? $base . 'uploads/audio/' . $w['audio_path'] : null;
+    $w['audio_url'] = dictionary_audio_url($w['audio_path'], $_SERVER);
     unset($w['audio_path']);
 }
 unset($w);

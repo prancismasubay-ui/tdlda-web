@@ -35,10 +35,7 @@ $synStmt = $pdo->prepare("SELECT synonym_term FROM word_synonyms WHERE word_id =
 $synStmt->execute([$id]);
 $word['synonyms'] = array_column($synStmt->fetchAll(), 'synonym_term');
 
-$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$base   = rtrim(dirname(dirname($_SERVER['SCRIPT_NAME'])), '/');
-$word['audio_url'] = $word['audio_path'] ? "{$scheme}://{$host}{$base}/uploads/audio/{$word['audio_path']}" : null;
+$word['audio_url'] = dictionary_audio_url($word['audio_path'], $_SERVER);
 unset($word['audio_path']);
 
 api_respond(['data' => $word]);

@@ -5,6 +5,7 @@
  * mobile app or other client to consume the dictionary data.
  */
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/public_urls.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
