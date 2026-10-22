@@ -41,10 +41,12 @@ function nav_active($page, $current) { return $page === $current ? 'active' : ''
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     User Feedback
   </a>
+  <?php if (is_administrator()): ?>
   <a class="nav-item <?= nav_active('users.php', $current) ?>" href="users.php">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.5-6 8-6s8 2 8 6"/></svg>
     Admin Users
   </a>
+  <?php endif; ?>
   <a class="nav-item <?= nav_active('results.php', $current) ?>" href="results.php">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-6 4 3 5-8"/></svg>
     Results
