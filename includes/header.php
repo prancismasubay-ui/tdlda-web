@@ -1,7 +1,7 @@
 <?php $user = current_user(); ?>
 <div class="topbar">
   <div class="brand">
-    <img src="assets/images/logo.svg" alt="Logo">
+    <img src="assets/images/tinglayan-seal.png" alt="Municipality of Tinglayan official seal">
     <div class="title">TINGLAYAN DIALECTS<br>LEARNING DICTIONARY</div>
   </div>
   <div class="userbox">
