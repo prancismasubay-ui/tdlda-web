@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
-        if ($user && password_verify($password, $user['password'])) {
+        if ($user && in_array($user['role'], ['Administrator', 'Editor'], true) && password_verify($password, $user['password'])) {
+            session_regenerate_id(true);
             $_SESSION['user_id']   = $user['id'];
             $_SESSION['full_name'] = $user['full_name'];
             $_SESSION['role']      = $user['role'];

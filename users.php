@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
-require_login();
+require_administrator();
 
 $users = $pdo->query("SELECT id, full_name, username, role, created_at FROM users ORDER BY created_at DESC")->fetchAll();
 ?>
@@ -90,13 +90,13 @@ $users = $pdo->query("SELECT id, full_name, username, role, created_at FROM user
         <label>Password</label>
         <input type="password" name="password" required minlength="6">
       </div>
-      <div class="form-group">
-        <label>Role</label>
-        <select name="role">
-          <option value="Editor">Editor</option>
-          <option value="Administrator">Administrator</option>
-        </select>
-      </div>
+        <div class="form-group" style="margin-bottom:14px;">
+          <label for="user_role">Role</label>
+          <select name="role" id="user_role">
+            <option value="Editor">Editor</option>
+            <option value="Administrator">Administrator</option>
+          </select>
+        </div>
       <div class="modal-actions">
         <button type="button" class="btn btn-outline" onclick="closeModal()">Cancel</button>
         <button type="submit" class="btn btn-primary">Save User</button>
