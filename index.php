@@ -96,8 +96,8 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
 
   <form method="GET" class="search-bar-wrap">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-    <input type="text" name="q" id="dictionarySearch" list="searchSuggestions" autocomplete="off" value="<?= htmlspecialchars($search) ?>" placeholder="Search in English or <?= htmlspecialchars($currentDialectName) ?>...">
-    <datalist id="searchSuggestions"></datalist>
+    <input type="text" name="q" id="dictionarySearch" role="combobox" aria-label="Search dictionary" aria-autocomplete="list" aria-controls="searchSuggestions" aria-expanded="false" autocomplete="off" value="<?= htmlspecialchars($search) ?>" placeholder="Search in English or <?= htmlspecialchars($currentDialectName) ?>...">
+    <div id="searchSuggestions" class="search-suggestions" role="listbox" aria-label="Dictionary words" hidden></div>
     <?php if ($categoryId !== ''): ?><input type="hidden" name="category" value="<?= htmlspecialchars($categoryId) ?>"><?php endif; ?>
     <?php if ($dialectId !== ''): ?><input type="hidden" name="dialect" value="<?= htmlspecialchars($dialectId) ?>"><?php endif; ?>
   </form>
@@ -106,7 +106,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   <div class="dialect-switcher">
     <label for="dialectSwitch">🌐 Dialect:</label>
     <select id="dialectSwitch" onchange="switchDialect(this.value)">
-      <option value="" <?= $dialectId === '' ? 'selected' : '' ?>>All Dialects</option>
+      <option value="" <?= $dialectId === '' ? 'selected' : '' ?>>All</option>
       <?php foreach ($dialects as $d): ?>
         <option value="<?= $d['id'] ?>" <?= (string)$dialectId === (string)$d['id'] ? 'selected' : '' ?>><?= htmlspecialchars($d['name']) ?></option>
       <?php endforeach; ?>
@@ -253,7 +253,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
   </div>
 </div>
 
-<script src="assets/js/search-suggestions.js"></script>
+<script src="assets/js/search-suggestions.js?v=<?= substr(hash_file('sha256', __DIR__ . '/assets/js/search-suggestions.js'), 0, 12) ?>"></script>
 <script src="assets/js/word-feedback.js?v=<?= substr(hash_file('sha256', __DIR__ . '/assets/js/word-feedback.js'), 0, 12) ?>"></script>
 <script>
 function switchDialect(dialectId) {
