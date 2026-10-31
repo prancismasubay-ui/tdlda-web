@@ -293,6 +293,12 @@ table.data-table tr:hover { background: #fafbfc; }
   font-size: 15px; box-shadow: 0 6px 18px rgba(0,0,0,.06);
 }
 .search-bar-wrap svg { position:absolute; left:18px; top:50%; transform:translateY(-50%); color:#9ca3af; }
+.search-suggestions { position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:20; max-height:320px; overflow-y:auto; background:var(--sidebar-bg); border:1px solid var(--border-color); border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.08); text-align:left; }
+.search-suggestions[hidden] { display:none; }
+.search-suggestion { display:flex; flex-direction:column; gap:3px; width:100%; padding:11px 16px; border:0; background:transparent; color:var(--text-dark); font:inherit; text-align:left; cursor:pointer; }
+.search-suggestion[aria-selected="true"], .search-suggestion:hover { background:var(--active-blue-bg); }
+.search-suggestion-word { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%; }
+.search-suggestion-dialect { color:var(--text-muted); font-size:12px; }
 
 .public-body { max-width: 1080px; margin: 0 auto; padding: 32px 28px 60px; }
 
