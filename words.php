@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/public_urls.php';
 require_login();
 
 $categories = $pdo->query("SELECT * FROM categories ORDER BY name")->fetchAll();
@@ -118,6 +119,7 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
             <tr><td colspan="7"><div class="empty-state">No dictionary entries found.</div></td></tr>
           <?php endif; ?>
           <?php foreach ($words as $w): ?>
+          <?php $audioUrl = dictionary_audio_url($w['audio_path'] ?? null, $_SERVER); ?>
           <tr>
             <td><strong><?= htmlspecialchars($w['dialect_term']) ?></strong></td>
             <td><?= $w['pos_name'] ? '<span class="pill">' . htmlspecialchars($w['pos_name']) . '</span>' : '&mdash;' ?></td>
@@ -129,11 +131,11 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
             </td>
             <td><span class="pill"><?= htmlspecialchars($w['dialect_name'] ?? 'Unassigned') ?></span></td>
             <td>
-              <?php if (!empty($w['audio_path'])): ?>
+              <?php if ($audioUrl !== null): ?>
                 <button class="audio-btn" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> Play
                 </button>
-                <audio id="aud-<?= $w['id'] ?>" src="uploads/audio/<?= htmlspecialchars($w['audio_path']) ?>"></audio>
+                <audio id="aud-<?= $w['id'] ?>" src="<?= htmlspecialchars($audioUrl, ENT_QUOTES, 'UTF-8') ?>"></audio>
               <?php else: ?>
                 <span style="color:#9ca3af;">&mdash;</span>
               <?php endif; ?>
@@ -240,8 +242,8 @@ $defaultDialectId = $dialects[0]['id'] ?? '';
           </select>
         </div>
         <div class="form-group">
-          <label>Audio Pronunciation (mp3/wav)</label>
-          <input type="file" name="audio_file" accept="audio/*">
+          <label>Audio pronunciation (MP3, WAV, OGG, M4A, AAC)</label>
+          <input type="file" name="audio_file" accept=".mp3,.wav,.ogg,.m4a,.aac,audio/mpeg,audio/wav,audio/ogg,audio/mp4,audio/aac">
         </div>
       </div>
 

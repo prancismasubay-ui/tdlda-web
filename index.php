@@ -3,6 +3,7 @@ require_once __DIR__ . '/includes/auth.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/dictionary_search.php';
 require_once __DIR__ . '/includes/word_presentation.php';
+require_once __DIR__ . '/includes/public_urls.php';
 
 $isLoggedIn = !empty($_SESSION['user_id']);
 
@@ -139,6 +140,7 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
         <?php
           $pronunciation = trim($w['pronunciation'] ?? '', " /\t\n\r\0\x0B");
           $audioPath = trim($w['audio_path'] ?? '');
+          $audioUrl = dictionary_audio_url($audioPath, $_SERVER);
           $translation = trim($w['english_translation'] ?? '');
           $meanings = array_values(array_filter($w['definitions'], function ($definition) {
               return trim($definition['definition_english'] ?? '') !== ''
@@ -159,15 +161,15 @@ foreach ($dialects as $d) { if ((string)$d['id'] === (string)$dialectId) { $curr
           </div>
           <?php endif; ?>
           <h2 class="wc-term"><?= htmlspecialchars($w['dialect_term']) ?></h2>
-          <?php if ($pronunciation !== '' || $audioPath !== '' || trim($w['pos_name'] ?? '') !== ''): ?>
+          <?php if ($pronunciation !== '' || $audioUrl !== null || trim($w['pos_name'] ?? '') !== ''): ?>
             <div class="wc-details">
               <?php if ($pronunciation !== ''): ?><span class="wc-pronunciation">/ <?= htmlspecialchars($pronunciation) ?> /</span><?php endif; ?>
-              <?php if ($audioPath !== ''): ?>
+              <?php if ($audioUrl !== null): ?>
                 <button type="button" class="wc-listen" onclick="document.getElementById('aud-<?= $w['id'] ?>').play()" aria-label="Listen to <?= htmlspecialchars($w['dialect_term']) ?>" title="Listen to pronunciation">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15 8a6 6 0 0 1 0 8M18 5a10 10 0 0 1 0 14"/></svg>
                   Listen
                 </button>
-                <audio id="aud-<?= $w['id'] ?>" preload="none" src="uploads/audio/<?= htmlspecialchars($audioPath) ?>"></audio>
+                <audio id="aud-<?= $w['id'] ?>" preload="none" src="<?= htmlspecialchars($audioUrl, ENT_QUOTES, 'UTF-8') ?>"></audio>
               <?php endif; ?>
               <?php if (trim($w['pos_name'] ?? '') !== ''): ?><span class="wc-pos"><?= htmlspecialchars(strtolower($w['pos_name'])) ?></span><?php endif; ?>
             </div>
