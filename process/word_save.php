@@ -37,8 +37,9 @@ if ($term === '' || !$dialectId || count(array_filter($defDefinitions, fn($d) =>
 }
 
 $audioDirectory = __DIR__ . '/../uploads/audio';
+$previousAudioFile = null;
 try {
-    $audioFileName = store_word_audio($_FILES['audio_file'] ?? [], $audioDirectory);
+    $audioFileName = store_word_audio($_FILES['audio_file'] ?? [], $audioDirectory, $pdo);
 } catch (RuntimeException $e) {
     header('Location: ../words.php?msg=' . urlencode($e->getMessage()));
     exit;
@@ -48,6 +49,9 @@ try {
     $pdo->beginTransaction();
 
     if ($id !== '') {
+        $existingAudio = $pdo->prepare('SELECT audio_path FROM words WHERE id = ?');
+        $existingAudio->execute([$id]);
+        $previousAudioFile = $existingAudio->fetchColumn() ?: null;
         if ($audioFileName) {
             $stmt = $pdo->prepare("UPDATE words SET dialect_id=?, category_id=?, part_of_speech_id=?, dialect_term=?, etymology=?, status=?, contributor=?, audio_path=?, pronunciation=?, english_translation=? WHERE id=?");
             $stmt->execute([$dialectId, $categoryId, $posId, $term, $etymology, $status, $contributor, $audioFileName, $pronunciation, $englishTranslation, $id]);
@@ -90,12 +94,20 @@ try {
     }
 
     $pdo->commit();
+    if ($audioFileName && $previousAudioFile && $previousAudioFile !== $audioFileName) {
+        try {
+            delete_word_audio($previousAudioFile, $audioDirectory, $pdo);
+        } catch (RuntimeException $cleanupError) {
+            error_log('Could not remove replaced audio file: ' . $cleanupError->getMessage());
+        }
+    }
 } catch (Exception $e) {
     if ($pdo->inTransaction()) $pdo->rollBack();
     if ($audioFileName !== null) {
-        $failedAudio = $audioDirectory . DIRECTORY_SEPARATOR . $audioFileName;
-        if (is_file($failedAudio) && !unlink($failedAudio)) {
-            error_log('Could not remove audio from a failed word save: ' . $audioFileName);
+        try {
+            delete_word_audio($audioFileName, $audioDirectory, $pdo);
+        } catch (RuntimeException $cleanupError) {
+            error_log('Could not remove audio from a failed word save: ' . $cleanupError->getMessage());
         }
     }
     header('Location: ../words.php?msg=' . urlencode('Error saving entry: ' . $e->getMessage()));
